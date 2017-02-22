@@ -1,0 +1,20 @@
+{
+    "name": "lem/labyrinth",
+    "description": "application de generations de labyrinthes parfaits",
+    "require": {
+        "silex/silex": "^2.0",
+        "twig/twig": "^2.1"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bastien Lhuaire",
+            "email": "bastien.lhuaire@outlook.fr"
+        }
+    ],
+    "autoload": {
+        "classmap": [""],
+        "psr-4": {"": ""}
+    }
+
+}

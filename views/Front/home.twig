@@ -1,0 +1,9 @@
+{% extends 'Layouts/master.twig' %} 
+{% block body %} 
+	{% for message in app.session.getFlashBag.get('message') %}
+	 <div class="container">
+	 {{ message }}
+	 {{ data }}
+	 </div>
+	{% endfor %}
+{% endblock %}                      
