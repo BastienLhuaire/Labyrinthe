@@ -1,11 +1,10 @@
 <?php
 require_once __DIR__.'/../vendor/autoload.php';
 
-/*
-const DB_HOST = 'localhost';
-const DB_DATABASE = 'portfolio';
+const DB_HOST     = 'localhost';
+const DB_DATABASE = 'labyrinthe';
 const DB_USERNAME = 'root';
-const DB_PASSWORD = '';*/
+const DB_PASSWORD = '';
                         
 use Silex\Application;
 use Silex\Provider\TwigServiceProvider as TwigSP;
@@ -20,18 +19,16 @@ $app->register(new Silex\Provider\SessionServiceProvider());
 //test flash message
 $app['session']->getFlashBag()->add('message', 'Super cool');
 
-/*
 $app['database.config'] = [
-        'dsn'      => 'mysql:host=' . DB_HOST . ';dbname=' . DB_DATABASE,
-        'username' => DB_USERNAME,
-        'password' => '',
-        'options'  => [
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", // flux en utf8
-                PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,  // mysql erreurs remontées sous forme d'exception
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, // tous les fetch en objets
-        ]
-];*/
-
+    'dsn'      => 'mysql:host=' . DB_HOST . ';dbname=' . DB_DATABASE,
+    'username' => DB_USERNAME,
+    'password' => '',
+    'options'  => [
+        PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8", // flux en utf8
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,  // mysql erreurs remontées sous forme d'exception
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ, // tous les fetch en objets
+    ]
+];
 
 $app['front.controller'] = function () use ($app) {
     return new \Controllers\FrontController($app);
@@ -39,13 +36,16 @@ $app['front.controller'] = function () use ($app) {
 
 $app->get('/', "front.controller:index") ;
 
-/*$app['pdo'] = function( $app ){    
+//redirection du form vers la methode du front.controleler
+$app->post('create', "front.controller:create") ;
+
+$app['pdo'] = function( $app ){    
   	
   	$options = $app['database.config'];
   
   	return new \PDO($options['dsn'], $options['username'], $options['password'], $options['options']);
 };  
-
+/*
 $app->get('/', function () use ($app) {
   
   	$prepare = $app['pdo']->prepare('SELECT * FROM projects');
