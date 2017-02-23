@@ -15,6 +15,7 @@ $app['debug'] = true;
 
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
 
 //test flash message
 $app['session']->getFlashBag()->add('message', 'Super cool');
@@ -35,7 +36,7 @@ $app['front.controller'] = function () use ($app) {
 };
 
 $app->get('/', "front.controller:index") ;
-
+$app->get('/labyrinthe', "front.controller:generate") ;
 //redirection du form vers la methode du front.controleler
 $app->post('create', "front.controller:create") ;
 
@@ -45,17 +46,6 @@ $app['pdo'] = function( $app ){
   
   	return new \PDO($options['dsn'], $options['username'], $options['password'], $options['options']);
 };  
-/*
-$app->get('/', function () use ($app) {
-  
-  	$prepare = $app['pdo']->prepare('SELECT * FROM projects');
-  	
-  	$prepare->execute();
-  
-    $data = $prepare->fetchAll();
-    return $app['twig']->render('Front/home.twig', ['data' => $data]);
-});*/
-
 $app->register(new TwigSP(), [
     'twig.path' => __DIR__ . '/../views',
 ]);

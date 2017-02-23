@@ -23,19 +23,27 @@
       <div class="row">
         {% block body %} 
         {% endblock %}
-          <div class="col-md-12">
+        <div class="col-md-12"> 
           <form method="POST" action="/create">
             <div class="form-group">
               <label for="hauteur">Hauteur du labyrinthe</label>
               <input type="number" class="form-control" id="hauteur" name="hauteur" placeholder="2" min="2" value="2">
-              <label for="largeur">Larguer du labyrinthe</label>
+              <label for="largeur">Largeur du labyrinthe</label>
               <input type="number" class="form-control" id="largeur" name="largeur" placeholder="2" min="2" value="2">
               <label for="couleur">Couleur des murs</label>
               <input type="color" class="form-control" id="couleur" name="couleur" value="#ffffff">
             </div>
             <button type="submit" class="btn btn-primary">Générer</button>
           </form>
-        </div>
+        </div> 
+      </div>
+      <div class="row">
+        {% block parametres %} 
+        {% endblock %}
+      </div>
+      <div class="row">
+        {% block labyrinthe %} 
+        {% endblock %}
       </div>
     </div>
 
