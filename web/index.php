@@ -12,7 +12,7 @@ $app = new Application();
 
 //mode debug activer
 $app['debug'] = true;
-
+echo "test";
 $app->register(new Silex\Provider\ServiceControllerServiceProvider());
 $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\ValidatorServiceProvider());
@@ -49,9 +49,5 @@ $app['pdo'] = function( $app ){
 $app->register(new TwigSP(), [
     'twig.path' => __DIR__ . '/../views',
 ]);
-
-//G2RER les forms
-//$app->match('parameter', function() use ($app) {}) ;
-
 
 $app->run();

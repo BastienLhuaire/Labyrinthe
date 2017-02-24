@@ -10,12 +10,17 @@
 	{% endif %}
 {% endblock %} 
 {% block parametres %}
-	<p>{{"hauteur : " ~ data.hauteur ~ " / "}}</p>
-	<p>{{"largeur : " ~ data.largeur ~ " / " }}</p>
-	<p>{{"couleur : " ~ data.couleur }}</p> 
+	{% if data is not null %}
+		<p></p>
+		<p>{{"hauteur : " ~ data.hauteur ~ " / "}}</p>
+		<p>{{"largeur : " ~ data.largeur ~ " / " }}</p>
+		<p>{{"couleur : " ~ data.couleur }}</p> 
+	{% endif %}
 {% endblock %}   
 {% block labyrinthe %}
-	{% for case in labyrinthe %}
-		<p>O</p>
-	{% endfor %}
+	{% if labyrinthe is not null %}
+		{% for case in labyrinthe %}
+			<p>O</p>
+		{% endfor %}
+	{% endif %}
 {% endblock %}                 
