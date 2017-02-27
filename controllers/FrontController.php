@@ -79,119 +79,93 @@ class FrontController {
 	  
 	    $data = $prepare->fetch();
 		$grille=[];
+		$hauteur=(int)$data->hauteur;
+		$largeur=(int)$data->largeur;
+		$chemin=[];
 		//genere la grille avec tout les murs
-		for ($y=0; $y < (int)$data->hauteur; $y++) { 
+		for ($y=0; $y < $hauteur; $y++) { 
 			$row=[];
 			array_push($grille,$row);
-			for ($x=0; $x < (int)$data->largeur; $x++) { 
-				$case=["visited"=>false,"mur"=>["bas"=>1,"droite"=>1],"x"=>$x,"y"=>$y];
+			for ($x=0; $x < $largeur; $x++) { 
+				$case=["visited"=>false,"mur"=>["bas"=>1,"droite"=>1,"gauche"=>1,"haut"=>1],"x"=>$x,"y"=>$y];
 				array_push($grille[$y],$case);
 			}
 		};
-
-		$caseCoo=[
-			"x"=>mt_rand(0,$data->hauteur-1),
-			"y"=>mt_rand(0,$data->largeur-1)
+		$CaseVisited=0;
+		//valide la premiére case choisit aléatoirement
+		$position=[
+			"x"=>mt_rand(0,$hauteur-1),
+			"y"=>mt_rand(0,$largeur-1)
 		];
-		function deleteWalls($grille,$caseEnCour,$chemin){
-			$directionPossible=[];
-			$tabDirection=["bas","droite","haut","gauche"];
-			$caseEnCour["visited"]=true;
-			// Verifier les direction possible du chemin
-			for ($i=0; $i < 4; $i++) {
-				$direction=$tabDirection[$i]; 
-				switch ($direction) {
-					case 'bas':
-						if (!is_null($grille[$caseEnCour["y"]+1][$caseEnCour["x"]])) {
-							$cell = $grille[$caseEnCour["y"]+1][$caseEnCour["x"]] ;
-							if (!$cell["visited"]) {
-								$directionPossible["bas"]=$cell;
-							}
-						}
-						break;
-					case 'droite':
-						if (!is_null($grille[$caseEnCour["y"]][$caseEnCour["x"]+1])) {
-							$cell = $grille[$caseEnCour["y"]][$caseEnCour["x"]+1] ;
-							if (!$cell["visited"]) {
-								$directionPossible["droite"]=$cell;
-							}
-						}
-						break;
-					case 'haut':
-						if (!is_null($grille[$caseEnCour["y"]-1][$caseEnCour["x"]])) {
-							$cell = $grille[$caseEnCour["y"]-1][$caseEnCour["x"]] ;
-							if (!$cell["visited"]) {
-								$directionPossible["haut"]=$cell;
-							}
-						}
-						break;
-					case 'gauche':
-						if (!is_null($grille[$caseEnCour["y"]][$caseEnCour["x"]-1])) {
-							$cell = $grille[$caseEnCour["y"]][$caseEnCour["x"]-1] ;
-							if (!$cell["visited"]) {
-								$directionPossible["gauche"]=$cell;
-							}
-						}
-						break;
+		$grille[$position["y"]][$position["x"]]["visited"]=true;
+		$CaseVisited++;
+
+		//tant que le nb de case visiter est inferieur a la taille de la grille
+		while($CaseVisited<$hauteur*$largeur){
+			$PosibleDir=[];
+			//Droite
+			if($position["x"]+1<$largeur){
+				if ($grille[$position["y"]][$position["x"]+1]["visited"]==false) {
+					array_push($PosibleDir, "Droite");
 				}
 			}
-			//on choisit parmis les possibilités aléatoirement
-			if ($directionPossible>0) {
-				$direction=array_rand($directionPossible);
-				$newCase=$directionPossible[$direction];
-				switch ($direction) {
-					case 'bas':
-					//supprime le mur dans la grille;
-						$grille[$caseEnCour["y"]][$caseEnCour["x"]]["murs"]["bas"]=0;
-						$caseEnCour["murs"]["bas"]=0;
-						array_push($chemin, $caseEnCour);
-						$caseEnCour=$newCase;
-						//recursivité
-						deleteWalls($grille,$caseEnCour,$chemin);
-						break;
-					
-					case 'droite':
-						//supprime le mur dans la grille;
-						$grille[$caseEnCour["y"]][$caseEnCour["x"]]["murs"]["droite"]=0;
-						$caseEnCour["murs"]["droite"]=0;
-						array_push($chemin, $caseEnCour);
-						$caseEnCour=$newCase;
-						//recursivité
-						deleteWalls($grille,$caseEnCour,$chemin);
-						break;
+			//Gauche
+			if($position["x"]-1>=0){
+				if ($grille[$position["y"]][$position["x"]-1]["visited"]==false) {
+					array_push($PosibleDir, "Gauche");
+				}
+			}
+			//Haut
+			if($position["y"]-1>=0){
+				if ($grille[$position["y"]-1][$position["x"]]["visited"]==false) {
+					array_push($PosibleDir, "Haut");
+				}
+			}
+			//Bas
+			if($position["y"]+1<$hauteur){
+				if ($grille[$position["y"]+1][$position["x"]]["visited"]==false) {
+					array_push($PosibleDir, "Bas");
+				}
+			}
 
-					case 'haut':
-					//supprime le mur du bas de la case du haut dans la grille;
-						$grille[$caseEnCour["y"]-1][$caseEnCour["x"]]["murs"]["bas"]=0;
-						$caseEnCour["murs"]["bas"]=0;
-						array_push($chemin, $caseEnCour);
-						$caseEnCour=$newCase;
-						//recursivité
-						deleteWalls($grille,$caseEnCour,$chemin);
+			if(count($PosibleDir)>0){
+				$CaseVisited++;
+				array_push($chemin, $grille[$position["y"]][$position["x"]]);
+				$direction = $PosibleDir[mt_rand(0,count($PosibleDir)-1)];
+				switch($direction){
+					case "Haut":
+					//enleve le mur du haut et le mur du bas de la ou on vas
+						$grille[$position["y"]][$position["x"]]["mur"]["haut"] = 0;
+						$grille[$position["y"]-1][$position["x"]]["mur"]["bas"] = 0;
+						$position["y"] --;
 						break;
-
-					case 'gauche':
-					//supprime le mur de droite de la case de gauche dans la grille;
-						$grille[$caseEnCour["y"]][$caseEnCour["x"-1]]["murs"]["bas"]=0;
-						$caseEnCour["murs"]["droite"]=0;
-						array_push($chemin, $caseEnCour);
-						$caseEnCour=$newCase;
-						//recursivité
-						deleteWalls($grille,$caseEnCour,$chemin);
+					case "Bas":
+						$grille[$position["y"]][$position["x"]]["mur"]["bas"] = 0;
+						$grille[$position["y"]+1][$position["x"]]["mur"]["haut"] = 0;
+						$position["y"] ++;
+						break;
+					case "Droite":
+						$grille[$position["y"]][$position["x"]]["mur"]["droite"] = 0;
+						$grille[$position["y"]][$position["x"]+1]["mur"]["gauche"] = 0;
+						$position["x"] ++;
+						break;
+					case "Gauche":
+						$grille[$position["y"]][$position["x"]]["mur"]["gauche"] = 0;
+						$grille[$position["y"]][$position["x"]-1]["mur"]["droite"] = 0;
+						$position["x"] --;
 						break;
 				}
+				//passe en visitez la nouvelle position
+				$grille[$position["y"]][$position["x"]]["visited"]=true;
 			}else{
-				//on recule dans le chemin si pas de possibilités
-				$previousCell = $chemin[count($chemin)-1];
-				$caseEnCour = $previousCell;
-				deleteWalls($grille,$caseEnCour,$chemin);
+				//recule d'une case
+				$position = array_pop($chemin);
 			}
 		}
-		// echo '<pre>';
-		// echo print_r();
-		// echo '<pre>';
-		$chemin=[];
-		deleteWalls($grille,$grille[$caseCoo["y"]][$caseCoo["x"]],$chemin);
-		return $this->app['twig']->render('Front/home.twig', ['labyrinthe' => $grille, 'data' => $data]);
+		//entrée
+		$grille[0][0]["mur"]["gauche"]=0;
+		$grille[$hauteur-1][$largeur-1]["mur"]["droite"]=0;
+		//sortie
+		return $this->app['twig']->render('Front/labyrinthe.twig', ['labyrinthe' => $grille, 'data' => $data]);
 	}
 }

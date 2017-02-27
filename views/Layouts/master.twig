@@ -31,7 +31,7 @@
               <label for="largeur">Largeur du labyrinthe</label>
               <input type="number" class="form-control" id="largeur" name="largeur" placeholder="2" min="2" value="2">
               <label for="couleur">Couleur des murs</label>
-              <input type="color" class="form-control" id="couleur" name="couleur" value="#ffffff">
+              <input type="color" class="form-control" id="couleur" name="couleur" value="#000000">
             </div>
             <button type="submit" class="btn btn-primary">Générer</button>
           </form>
@@ -42,8 +42,10 @@
         {% endblock %}
       </div>
       <div class="row">
+        <div class="col-md-12">
         {% block labyrinthe %} 
         {% endblock %}
+        </div>
       </div>
     </div>
 

@@ -8,14 +8,31 @@
 			{% endfor %}
 		</ul>
 	{% endif %}
-{% endblock %} 
-{% block parametres %}
-	<p>{{"hauteur : " ~ data.hauteur ~ " / "}}</p>
-	<p>{{"largeur : " ~ data.largeur ~ " / " }}</p>
-	<p>{{"couleur : " ~ data.couleur }}</p> 
 {% endblock %}   
+{% block parametres %}
+	<ul>
+		<li>hauteur : {{data.hauteur}}</li>
+		<li>largeur : {{data.largeur}}</li>
+		<li>couleur : {{data.couleur}}</li>
+	</ul>
+{% endblock %}
 {% block labyrinthe %}
-	{% for case in labyrinthe %}
-		<p>O</p>
+	<svg width="{{data.largeur*20+2}}" height="{{data.hauteur*20+2}}">
+	{% for ligne in labyrinthe %}
+		{% for case in ligne %}
+			{% if case["mur"]["droite"] == 1%}
+				<rect x="{{case["x"]*20+20}}" y="{{case["y"]*20}}" width="2" height="20" style="fill:{{data.couleur}}" />
+			{% endif %}
+			{% if case["mur"]["gauche"] == 1%}
+				<rect x="{{case["x"]*20}}" y="{{case["y"]*20}}" width="2" height="20" style="fill:{{data.couleur}}" />
+			{% endif %}
+			{% if case["mur"]["haut"] == 1%}
+				<rect x="{{case["x"]*20}}" y="{{case["y"]*20}}" width="22" height="2" style="fill:{{data.couleur}}" />
+			{% endif %}
+			{% if case["mur"]["bas"] == 1%}
+				<rect x="{{case["x"]*20}}" y="{{case["y"]*20+20}}" width="22" height="2" style="fill:{{data.couleur}}" />
+			{% endif %}
+		{% endfor %}
 	{% endfor %}
+	</svg>
 {% endblock %}                   
